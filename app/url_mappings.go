@@ -3,6 +3,8 @@ package app
 import (
 	productController "mvc-go/controllers/product"
 	userController "mvc-go/controllers/user"
+
+	log "github.com/sirupsen/logrus"
 )
 
 func mapUrls() {
@@ -15,4 +17,5 @@ func mapUrls() {
 	router.GET("/user", userController.GetUsers)
 	router.POST("/user", userController.UserInsert)
 
+	log.Info("Finishing mappings configurations")
 }
