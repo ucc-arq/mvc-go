@@ -27,6 +27,8 @@ func UserInsert(c *gin.Context) {
 	var userDto dto.UserDto
 	err := c.BindJSON(&userDto)
 
+	log.Debug(userDto)
+
 	if err != nil {
 		log.Error(err.Error())
 		c.JSON(http.StatusBadRequest, err.Error())
