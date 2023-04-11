@@ -2,7 +2,9 @@ package services
 
 import (
 	addressCliente "mvc-go/clients/address"
+	telephoneCliente "mvc-go/clients/telephone"
 	userCliente "mvc-go/clients/user"
+
 	"mvc-go/dto"
 	"mvc-go/model"
 	e "mvc-go/utils/errors"
@@ -11,9 +13,10 @@ import (
 type userService struct{}
 
 type userServiceInterface interface {
-	GetUserById(id int) (dto.UserDto, e.ApiError)
+	GetUserById(id int) (dto.UserDetailDto, e.ApiError)
 	GetUsers() (dto.UsersDto, e.ApiError)
 	InsertUser(userDto dto.UserDto) (dto.UserDto, e.ApiError)
+	AddUserTelephone(telephoneDto dto.TelephoneDto) (dto.UserDetailDto, e.ApiError)
 }
 
 var (
@@ -24,22 +27,29 @@ func init() {
 	UserService = &userService{}
 }
 
-func (s *userService) GetUserById(id int) (dto.UserDto, e.ApiError) {
+func (s *userService) GetUserById(id int) (dto.UserDetailDto, e.ApiError) {
 
 	var user model.User = userCliente.GetUserById(id)
-	var userDto dto.UserDto
+	var userDetailDto dto.UserDetailDto
 
 	if user.Id == 0 {
-		return userDto, e.NewBadRequestApiError("user not found")
+		return userDetailDto, e.NewBadRequestApiError("user not found")
 	}
-	userDto.Name = user.Name
-	userDto.LastName = user.LastName
-	userDto.UserName = user.UserName
-	userDto.Id = user.Id
-	userDto.Street = user.Address.Street
-	userDto.Number = user.Address.Number
 
-	return userDto, nil
+	userDetailDto.Name = user.Name
+	userDetailDto.LastName = user.LastName
+	userDetailDto.Street = user.Address.Street
+	userDetailDto.Number = user.Address.Number
+	for _, telephone := range user.Telephones {
+		var dtoTelephone dto.TelephoneDto
+
+		dtoTelephone.Code = telephone.Code
+		dtoTelephone.Number = telephone.Number
+
+		userDetailDto.TelephonesDto = append(userDetailDto.TelephonesDto, dtoTelephone)
+	}
+
+	return userDetailDto, nil
 }
 
 func (s *userService) GetUsers() (dto.UsersDto, e.ApiError) {
@@ -84,4 +94,34 @@ func (s *userService) InsertUser(userDto dto.UserDto) (dto.UserDto, e.ApiError) 
 	userDto.Id = user.Id
 
 	return userDto, nil
+}
+
+func (s *userService) AddUserTelephone(telephoneDto dto.TelephoneDto) (dto.UserDetailDto, e.ApiError) {
+
+	var telephone model.Telephone
+
+	telephone.Code = telephoneDto.Code
+	telephone.Number = telephoneDto.Number
+	telephone.UserId = telephoneDto.UserId
+	//Adding
+	telephone = telephoneCliente.AddTelephone(telephone)
+
+	// Find User
+	var user model.User = userCliente.GetUserById(telephoneDto.UserId)
+	var userDetailDto dto.UserDetailDto
+
+	userDetailDto.Name = user.Name
+	userDetailDto.LastName = user.LastName
+	userDetailDto.Street = user.Address.Street
+	userDetailDto.Number = user.Address.Number
+	for _, telephone := range user.Telephones {
+		var dtoTelephone dto.TelephoneDto
+
+		dtoTelephone.Code = telephone.Code
+		dtoTelephone.Number = telephone.Number
+
+		userDetailDto.TelephonesDto = append(userDetailDto.TelephonesDto, dtoTelephone)
+	}
+
+	return userDetailDto, nil
 }

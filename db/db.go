@@ -2,7 +2,9 @@ package db
 
 import (
 	addressClient "mvc-go/clients/address"
+	telephoneClient "mvc-go/clients/telephone"
 	userClient "mvc-go/clients/user"
+
 	"mvc-go/model"
 
 	"github.com/jinzhu/gorm"
@@ -36,12 +38,14 @@ func init() {
 	// We need to add all CLients that we build
 	userClient.Db = db
 	addressClient.Db = db
+	telephoneClient.Db = db
 }
 
 func StartDbEngine() {
 	// We need to migrate all classes model.
 	db.AutoMigrate(&model.User{})
 	db.AutoMigrate(&model.Address{})
+	db.AutoMigrate(&model.Telephone{})
 
 	log.Info("Finishing Migration Database Tables")
 }

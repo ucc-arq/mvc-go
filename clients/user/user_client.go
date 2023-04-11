@@ -12,7 +12,7 @@ var Db *gorm.DB
 func GetUserById(id int) model.User {
 	var user model.User
 
-	Db.Where("id = ?", id).Preload("Address").First(&user)
+	Db.Where("id = ?", id).Preload("Address").Preload("Telephones").First(&user)
 	log.Debug("User: ", user)
 
 	return user
