@@ -1,18 +1,26 @@
 package app
 
 import (
-	userController "mvc-go/controllers/user"
+	barrioController "mvc-go/controllers/barrio"
+	medicionController "mvc-go/controllers/medicion"
+	sensorController "mvc-go/controllers/sensor"
 
 	log "github.com/sirupsen/logrus"
 )
 
 func mapUrls() {
 
-	// Users Mapping
-	router.GET("/user/:id", userController.GetUserById)
-	router.GET("/user", userController.GetUsers)
-	router.POST("/user", userController.UserInsert)
-	router.POST("/user/:id/telephone", userController.AddUserTelephone)
+	// Sensores Mapping
+	router.POST("/sensor", sensorController.SensorInsert)
+	router.PUT("/sensor/:id/activar", sensorController.ActivarSensor)
+	router.PUT("/sensor/:id/pausar", sensorController.PausarSensor)
+	router.GET("/sensor/:id", sensorController.GetSensorById)
+
+	// Bario Mapping
+	router.GET("/barrio/:id", barrioController.GetBarrioDetalleById)
+
+	// Medidcion Mapping
+	router.POST("/medicion", medicionController.RegistrarMedicion)
 
 	log.Info("Finishing mappings configurations")
 }

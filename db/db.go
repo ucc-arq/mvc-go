@@ -1,9 +1,9 @@
 package db
 
 import (
-	addressClient "mvc-go/clients/address"
-	telephoneClient "mvc-go/clients/telephone"
-	userClient "mvc-go/clients/user"
+	barrioClient "mvc-go/clients/barrio"
+	medicionClient "mvc-go/clients/medicion"
+	sensorClient "mvc-go/clients/sensor"
 
 	"mvc-go/model"
 
@@ -19,11 +19,10 @@ var (
 
 func init() {
 	// DB Connections Paramters
-	DBName := "uccarqsoft"
-	DBUser := "egaite"
-	DBPass := ""
-	//DBPass := os.Getenv("MVC_DB_PASS")
-	DBHost := "db4free.net"
+	DBName := "uccarqsoft"  //Nombre de la base de datos local de ustedes
+	DBUser := "egaite"      //usuario de la base de datos, habitualmente root
+	DBPass := ""            //password del root en la instalacion
+	DBHost := "db4free.net" //host de la base de datos. hbitualmente 127.0.0.1
 	// ------------------------
 
 	db, err = gorm.Open("mysql", DBUser+":"+DBPass+"@tcp("+DBHost+":3306)/"+DBName+"?charset=utf8&parseTime=True")
@@ -36,16 +35,16 @@ func init() {
 	}
 
 	// We need to add all CLients that we build
-	userClient.Db = db
-	addressClient.Db = db
-	telephoneClient.Db = db
+	barrioClient.Db = db
+	sensorClient.Db = db
+	medicionClient.Db = db
 }
 
 func StartDbEngine() {
 	// We need to migrate all classes model.
-	db.AutoMigrate(&model.User{})
-	db.AutoMigrate(&model.Address{})
-	db.AutoMigrate(&model.Telephone{})
+	db.AutoMigrate(&model.Barrio{})
+	db.AutoMigrate(&model.Sensor{})
+	db.AutoMigrate(&model.Medicion{})
 
 	log.Info("Finishing Migration Database Tables")
 }
