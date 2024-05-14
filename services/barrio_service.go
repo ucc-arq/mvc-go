@@ -11,6 +11,7 @@ type barrioService struct{}
 
 type barrioServiceInterface interface {
 	GetBarrioDetalleById(id int) (dto.BarrioDetailDto, e.ApiError)
+	GetBarrios() (dto.BarriosDetailDto, e.ApiError)
 }
 
 var (
@@ -46,4 +47,21 @@ func (s *barrioService) GetBarrioDetalleById(id int) (dto.BarrioDetailDto, e.Api
 	}
 
 	return barrioDetailDto, nil
+}
+
+func (s *barrioService) GetBarrios() (dto.BarriosDetailDto, e.ApiError) {
+
+	var barrios model.Barrios = barrioCliente.GetBarrios()
+	var barriosDto dto.BarriosDetailDto
+
+	for _, barrio := range barrios {
+		var barrioDto dto.BarrioDetailDto
+
+		barrioDto.Id = barrio.Id
+		barrioDto.Descripcion = barrio.Descripcion
+
+		barriosDto = append(barriosDto, barrioDto)
+	}
+
+	return barriosDto, nil
 }

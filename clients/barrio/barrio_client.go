@@ -26,3 +26,12 @@ func GetBarrioSensoresById(id int) model.Barrio {
 
 	return barrio
 }
+
+func GetBarrios() model.Barrios {
+	var barrios model.Barrios
+	Db.Order("descripcion").Find(&barrios)
+
+	log.Debug("Barrios: ", barrios)
+
+	return barrios
+}

@@ -23,3 +23,13 @@ func GetBarrioDetalleById(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, barrioDetailDto)
 }
+
+func GetBarrios(c *gin.Context) {
+	var barriosDto dto.BarriosDetailDto
+	barriosDto, err := service.BarrioService.GetBarrios()
+	if err != nil {
+		c.JSON(err.Status(), err)
+		return
+	}
+	c.JSON(http.StatusOK, barriosDto)
+}

@@ -2,8 +2,10 @@ package db
 
 import (
 	barrioClient "mvc-go/clients/barrio"
+	compradorClient "mvc-go/clients/comprador"
 	medicionClient "mvc-go/clients/medicion"
 	sensorClient "mvc-go/clients/sensor"
+	vendedorClient "mvc-go/clients/vendedor"
 
 	"mvc-go/model"
 
@@ -38,6 +40,8 @@ func init() {
 	barrioClient.Db = db
 	sensorClient.Db = db
 	medicionClient.Db = db
+	vendedorClient.Db = db
+	compradorClient.Db = db
 }
 
 func StartDbEngine() {
@@ -45,6 +49,9 @@ func StartDbEngine() {
 	db.AutoMigrate(&model.Barrio{})
 	db.AutoMigrate(&model.Sensor{})
 	db.AutoMigrate(&model.Medicion{})
+
+	db.AutoMigrate(&model.Vendedor{})
+	db.AutoMigrate(&model.Comprador{})
 
 	log.Info("Finishing Migration Database Tables")
 }
